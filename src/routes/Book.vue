@@ -201,6 +201,9 @@ export default {
     }
   }
   @include media-breakpoint-down(md) {
+    .poster {
+      justify-content: center;
+    }
     .specs {
       .title {
         font-size: 30px;
