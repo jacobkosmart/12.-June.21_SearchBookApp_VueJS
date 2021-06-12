@@ -203,6 +203,7 @@ export default {
   @include media-breakpoint-down(md) {
     .poster {
       justify-content: center;
+      text-align: center;
     }
     .specs {
       .title {
