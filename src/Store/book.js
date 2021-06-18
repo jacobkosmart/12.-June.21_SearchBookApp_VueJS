@@ -124,7 +124,6 @@ export default {
   }
 }
 
-<<<<<<< HEAD
 function _fetchBook(payload) { // api 정보 가져오는 _fetch 함수 작성
   const { title, type } = payload
   return new Promise((resolve, reject) => {
@@ -146,18 +145,6 @@ function _fetchBook(payload) { // api 정보 가져오는 _fetch 함수 작성
 }
 
 function _fetchBookByID(payload) { // api 정보 가져오는 _fetch 함수 작성
-=======
-
-//  serverless functions with netlify functions and netlify.toml
-async function _fetchMovie(payload) {
-  return await axios.post('/.netlify/functions/book', payload)
-}
-
-
-
-function _fetchMovieByID(payload) { // api 정보 가져오는 _fetch 함수 작성
-
->>>>>>> b2b7f29b1334346b3fa508cb141bd472a010004d
   const { id } = payload
   return new Promise((resolve, reject) => {
     axios.get(`https://dapi.kakao.com/v3/search/book?target=isbn&query=${id}`, {
