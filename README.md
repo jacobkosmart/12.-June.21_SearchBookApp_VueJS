@@ -1,8 +1,8 @@
 
 #  📔 Book Search App 
 
+<a href="http://book.jacobko.info/" target="_blank">Live Demo</a>
 
-[Demo](http://book.jacobko.info/){:target="_blank"}
 
 
 <img src = "https://github.com/jacobkosmart/12.-June.21_SearchBookApp_VueJS/blob/98fbbde52d92f7ccad9fe2040bd93526cfac6a76/src/assets/Animation1.gif" width ="100%" /> 
