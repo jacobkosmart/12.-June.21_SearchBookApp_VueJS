@@ -43,7 +43,7 @@ export default {
       })
 
       try {
-        const res = await _fetchMovie({
+        const res = await _fetchBook({
         ...payload,
         page: 1
       })
@@ -71,7 +71,7 @@ export default {
       if (pageLength > 1) {
         for (let page = 2; page <= pageLength; page++) {
           if (page > (payload.number / 10)) break
-          const res = await _fetchMovie({
+          const res = await _fetchBook({
             ...payload,
             page
           })
@@ -100,7 +100,7 @@ export default {
         loading: true
       })
       try {
-        const res = await _fetchMovieByID (payload)
+        const res = await _fetchBookByID (payload)
         console.log(res.data.documents[0])
         // console.log(res.data.documents[0].datetime)
         const rawDate = new Date(res.data.documents[0].datetime)
@@ -123,7 +123,7 @@ export default {
   }
 }
 
-function _fetchMovie(payload) { // api 정보 가져오는 _fetch 함수 작성
+function _fetchBook(payload) { // api 정보 가져오는 _fetch 함수 작성
   const { title, type } = payload
   return new Promise((resolve, reject) => {
     axios.get(`https://dapi.kakao.com/v3/search/book?target=title&query=${title}&sort=${type}&size=50`, {
@@ -143,7 +143,7 @@ function _fetchMovie(payload) { // api 정보 가져오는 _fetch 함수 작성
   })
 }
 
-function _fetchMovieByID(payload) { // api 정보 가져오는 _fetch 함수 작성
+function _fetchBookByID(payload) { // api 정보 가져오는 _fetch 함수 작성
   const { id } = payload
   return new Promise((resolve, reject) => {
     axios.get(`https://dapi.kakao.com/v3/search/book?target=isbn&query=${id}`, {
