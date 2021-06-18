@@ -1,5 +1,6 @@
 import axios from 'axios'
 import _uniqBy from 'lodash/uniqBy'
+const { kakaoKey } = process.env
 
 const _defaultMessage = 'Search for the book title'
 
@@ -81,7 +82,7 @@ export default {
           })
         }
       }
-      } catch (message) {
+      } catch ({ message }) {
         commit('updateState', {
           books: [],
           message
@@ -148,7 +149,7 @@ function _fetchBookByID(payload) { // api 정보 가져오는 _fetch 함수 작�
   return new Promise((resolve, reject) => {
     axios.get(`https://dapi.kakao.com/v3/search/book?target=isbn&query=${id}`, {
       headers: {
-      Authorization: "KakaoAK 76173c3153cac16dba5ad5d2bf9af6cc"
+      Authorization: kakaoKey
       }
     })
     .then(res => {
@@ -164,19 +165,12 @@ function _fetchBookByID(payload) { // api 정보 가져오는 _fetch 함수 작�
 }
 
 
+// ---- _fetchMovie 는 serverless 를 사용해서 netlify functions 를 사용해서 만듬
 
-
-
-
-
-
-
-//  ----- 백업
-
-// function searchbookByID(payload) { // api 정보 가져오는 _fetch 함수 작성
-//   const { id } = payload
+// function _fetchMovie(payload) { // api 정보 가져오는 _fetch 함수 작성
+//   const { title, type } = payload
 //   return new Promise((resolve, reject) => {
-//     axios.get(`https://dapi.kakao.com/v3/search/book?target=isbn&query=${id}`, {
+//     axios.get(`https://dapi.kakao.com/v3/search/book?target=title&query=${title}&sort=${type}&size=50`, {
 //       headers: {
 //       Authorization: "KakaoAK 76173c3153cac16dba5ad5d2bf9af6cc"
 //       }
@@ -192,5 +186,20 @@ function _fetchBookByID(payload) { // api 정보 가져오는 _fetch 함수 작�
 //     })
 //   })
 // }
+
+
+
+
+
+// async function _fetchMovie(payload) {
+//   return await axios.post('/.netlify/functions/book.js', payload)
+// }
+
+
+// async function _fetchMovieByID(payload) {
+//   return await axios.post('/.netlify/functions/bookid.js', payload)
+// }
+
+
 
 
