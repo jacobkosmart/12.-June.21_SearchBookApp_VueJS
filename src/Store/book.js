@@ -124,12 +124,19 @@ export default {
   }
 }
 
+
+// ---- serverless functions
+// async function _fetchBook(payload) {
+//   return await axios.post('/.netlify/functions/book', payload)
+// }
+
+
 function _fetchBook(payload) { // api 정보 가져오는 _fetch 함수 작성
   const { title, type } = payload
   return new Promise((resolve, reject) => {
     axios.get(`https://dapi.kakao.com/v3/search/book?target=title&query=${title}&sort=${type}&size=50`, {
       headers: {
-      Authorization: "KakaoAK 76173c3153cac16dba5ad5d2bf9af6cc"
+      Authorization: kakaoKey
       }
     })
     .then(res => {
@@ -165,9 +172,9 @@ function _fetchBookByID(payload) { // api 정보 가져오는 _fetch 함수 작�
 }
 
 
-// ---- _fetchMovie 는 serverless 를 사용해서 netlify functions 를 사용해서 만듬
+// ---- _fetchBook 는 serverless 를 사용해서 netlify functions 를 사용해서 만듬
 
-// function _fetchMovie(payload) { // api 정보 가져오는 _fetch 함수 작성
+// function _fetchBook(payload) { // api 정보 가져오는 _fetch 함수 작성
 //   const { title, type } = payload
 //   return new Promise((resolve, reject) => {
 //     axios.get(`https://dapi.kakao.com/v3/search/book?target=title&query=${title}&sort=${type}&size=50`, {
@@ -190,13 +197,7 @@ function _fetchBookByID(payload) { // api 정보 가져오는 _fetch 함수 작�
 
 
 
-
-// async function _fetchMovie(payload) {
-//   return await axios.post('/.netlify/functions/book.js', payload)
-// }
-
-
-// async function _fetchMovieByID(payload) {
+// async function _fetchBookByID(payload) {
 //   return await axios.post('/.netlify/functions/bookid.js', payload)
 // }
 
