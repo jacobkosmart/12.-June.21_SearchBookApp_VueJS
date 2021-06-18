@@ -5,41 +5,49 @@
 [Demo](http://book.jacobko.info/)
 
 
-<img src = "https://user-images.githubusercontent.com/28912774/119988494-239e2880-c001-11eb-8607-0722c2ceca86.gif" width ="300" /> <img src = "https://user-images.githubusercontent.com/28912774/119988501-24cf5580-c001-11eb-85ef-80084b7df5a2.gif" width ="300" />
+<img src = "https://github.com/jacobkosmart/12.-June.21_SearchBookApp_VueJS/blob/98fbbde52d92f7ccad9fe2040bd93526cfac6a76/src/assets/Animation1.gif" width ="600" /> 
+<img src = "https://github.com/jacobkosmart/12.-June.21_SearchBookApp_VueJS/blob/98fbbde52d92f7ccad9fe2040bd93526cfac6a76/src/assets/Animation2.gif" width ="600" />
 
 
 ## 💻 1.프로젝트 소개  
 
 ### 📝 사용기술 및 언어    
 
-- Vanilla JS
-- CSS
-- HTML
+- Vue.JS
+- Vuex
+- Vue Router
+- SCSS
+- BootStrap
+- Netlify serverless
+- Kakao Open API
 
 ### ⏰ 개발 기간  
-2021-05-19 ~ 2021-05-28
+2021-05-29 ~ 2021-06-12
 
 
 ## 🗒 2.프로젝트 내용
 
-### 주요 기능
-
-- mobile frame 에 맞게 app 제작
-
-- The maal DB 의 random recipe 출력
-
-- 좋아요 버튼을 누르면 favorite meals 에 추가 
-
-- recipe 클릭 시, 상세 정보 출력 (`youtube`, `ingredients`, `details`)
-
-- 검색창에 (예: rice) 입력 시, 해당되는 recipe 검색됨
+###  주요 기능
 
 
+- 책 제목을 검색 하여 책 표지, 글쓴이, 출간일, 출판사, 정가, isbn, 자세한 도서정보 링크 페이지를 제공
+
+- 검색은 한번에 최대 50개 도서 까지 가능, 검색 필터는 accuracy (정확도), latest (최신) 순서별로 검색 
+
+- Fully responsive design (디바이스 해상도에 따라 반응형 디자인) 
+
+- 자세한 도서정보 버튼 클릭 시, 외부의 다음 사이트의 북 검색 페이지로 자동 링크 
+
+<img src = "https://github.com/jacobkosmart/12.-June.21_SearchBookApp_VueJS/blob/98fbbde52d92f7ccad9fe2040bd93526cfac6a76/src/assets/App%20Structure.jpg" width ="100%" /> 
 
 
 ## 📌 3.주요 코드
 
-### 1. API 연결
+### 1. App Structure 
+
+- 이 프로젝트 vue.js v3.0 으로 개발 하였습니다. App structure 는 아래의 그림과 같습니다.
+
+
 
 - 비동기 (async, await 을 통해서 getRandomMeal, getMealById, getMEalBySerch) 를 retun 함
 
