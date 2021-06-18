@@ -1,5 +1,6 @@
 import axios from 'axios'
 import _uniqBy from 'lodash/uniqBy'
+const { kakaoKey } = process.env
 
 const _defaultMessage = 'Search for the book title'
 
@@ -132,11 +133,12 @@ async function _fetchMovie(payload) {
 
 
 function _fetchMovieByID(payload) { // api 정보 가져오는 _fetch 함수 작성
+
   const { id } = payload
   return new Promise((resolve, reject) => {
     axios.get(`https://dapi.kakao.com/v3/search/book?target=isbn&query=${id}`, {
       headers: {
-      Authorization: "KakaoAK 76173c3153cac16dba5ad5d2bf9af6cc"
+      Authorization: kakaoKey
       }
     })
     .then(res => {

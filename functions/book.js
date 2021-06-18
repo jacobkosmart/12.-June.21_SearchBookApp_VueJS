@@ -1,5 +1,5 @@
 const axios = require('axios')
-
+const { kakaoKey } = process.env
 
 exports.handler = async function (event) {
   console.log(event)
@@ -9,7 +9,7 @@ exports.handler = async function (event) {
   try {
     const { data } = await axios.get(`https://dapi.kakao.com/v3/search/book?target=title&query=${title}&sort=${type}&size=50`, {
       headers: {
-        Authorization: "KakaoAK 76173c3153cac16dba5ad5d2bf9af6cc"
+        Authorization: kakaoKey
       }
     })
     if (data.Error) {
