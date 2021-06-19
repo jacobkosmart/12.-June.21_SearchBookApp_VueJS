@@ -38,132 +38,149 @@
 
 - 자세한 도서정보 버튼 클릭 시, 외부의 다음 사이트의 북 검색 페이지로 자동 링크 
 
-<img src = "https://github.com/jacobkosmart/12.-June.21_SearchBookApp_VueJS/blob/98fbbde52d92f7ccad9fe2040bd93526cfac6a76/src/assets/App%20Structure.jpg" width ="100%" /> 
 
 
 ## 📌 3.주요 코드
 
-### 1. App Structure 
+### 1.App Structure 
 
 - 이 프로젝트 vue.js v3.0 으로 개발 하였습니다. App structure 는 아래의 그림과 같습니다.
 
 
+<img src = "https://github.com/jacobkosmart/12.-June.21_SearchBookApp_VueJS/blob/98fbbde52d92f7ccad9fe2040bd93526cfac6a76/src/assets/App%20Structure.jpg" width ="100%" /> 
 
-- 비동기 (async, await 을 통해서 getRandomMeal, getMealById, getMEalBySerch) 를 retun 함
+
+
+### 2.Kakao API 비동기 연결 with axios
+
+- `axios.get()` 을 통해서 kakao API 의 정보를 가져옴. Authorization 은 .env 에 api key 를 따로 저장해서 웹 상으로 노출되지 않음
 
 ```js
-async function getRandomMeal() {
-  const resp = await fetch("https://www.themealdb.com/api/json/v1/1/random.php");
-  const respData = await resp.json();
-  const randomMeal = respData.meals[0];
+const { kakaoKey } = process.env
 
-  console.log(randomMeal)
-
-  addMeal(randomMeal, true);
-}
-
-async function getMealById(id) {
-  const resp = await fetch("https://www.themealdb.com/api/json/v1/1/lookup.php?i=" + id);
-
-  const respData = await resp.json();
-
-  const meal = respData.meals[0];
-
-  return meal
-}
-
-async function getMealBySearch(term) {
-  const resp = await fetch("https://www.themealdb.com/api/json/v1/1/search.php?s=" + term);
-
-  const respData = await resp.json();
-  const meals = respData.meals;
-
-  return meals;
+function _fetchBook(payload) { // api 정보 가져오는 _fetch 함수 작성
+  const { title, type } = payload
+  return new Promise((resolve, reject) => {
+    axios.get(`https://dapi.kakao.com/v3/search/book?target=title&query=${title}&sort=${type}&size=50`, {
+      headers: {
+      Authorization: kakaoKey
+      }
+    })
+    .then(res => {
+      if (res.data.Error) {
+        reject()
+      }
+      resolve(res)
+    })
+    .catch(err => {
+      reject(err.message)
+    })
+  })
 }
 ```
 
-### 2. favorite Meals
+### 3. Vue Router 
 
-- like  버튼을 누르면 favorite 창에 메뉴 추가 하기
+- 특정 주소와 접근할 페이지 정보를 설정 함
 
-```js
-function addMealFav(mealData) {
-
-  const favMeal = document.createElement("li");
-
-  favMeal.innerHTML = `
-    <img src="${mealData.strMealThumb}" alt="${mealData.strMeal}">
-    <span>${mealData.strMeal}</span>
-    <button class= "clear"><i class="fas fa-window-close"></i></button>
-  `;
-
-  const btn = favMeal.querySelector('.clear');
-
-  btn.addEventListener('click', () => {
-    removeMealLS(mealData.idMeal);
-
-    fetchFavMeals();
-  });
-
-  favMeal.addEventListener('click', () => {
-    showMealInfo(mealData);
-  });
-
-```
-
-### 3. recipe information modal 
-
-- modal 창으로 youtube, ingredients, details 등을 API 로 부터 가져와서 해당 정보를 return
-
-- JS 정규식을 통해서 해당 youtube URL 에서 해당되는 ID 부분만 `match()`를 사용하여 return
+- Hash mode 를 사용하여 모든 URL 을 HASH(#) 형태로, URL 이 변경될때 페이지가 다시 로드 되지 않음
 
 ```js
+import { createRouter, createWebHashHistory } from 'vue-router'
+import Home from './Home'
+import About from './About'
+import Book from './Book'
+import NotFound from './NotFound'
 
-function showMealInfo(mealData) {
-  // clean it up
 
-  mealInfoEl.innerHTML = '';
-
-  // update the Meal info
-  const mealEl = document.createElement('div');
-
-  const ingredients = [];
-
-  // get ingredients and measures
-  for(let i=1; i<=20; i++) {
-    if(mealData['strIngredient' + i]) {
-      ingredients.push(`${mealData['strIngredient' + i]} - ${mealData['strMeasure' + i]}`)
-    } else {
-      break;
+export default createRouter({
+  // Hash, history
+  // https://google.com/#/search  # 를 사용해서 sub page 를 연결해줌
+  history: createWebHashHistory(),
+  scrollBehavior() {
+    return { top: 0 }
+  },
+  // pages
+  routes: [
+    {
+      path: '/', // 경로를 의미 home directory를 가리침
+      component: Home
+    },
+    {
+      path: '/about',
+      component: About
+    },
+    {
+      path: '/book/:id',
+      component: Book
+    },
+    {
+      path: '/:notFound(.*)',
+      component: NotFound
     }
-  }
-
-  // JS regular expressions (get ID)
-  const youtubeEl = mealData.strYoutube
-  const selectURL = youtubeEl.match(/(?<=\=).{1,}/g)
-
-  mealEl.innerHTML = `
-    <h1>${mealData.strMeal}</h1>
-    <iframe class="video-wrap" width="100%" height="315" src="https://www.youtube.com/embed/${selectURL}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-    <h3>Ingredients: </h3>
-    <ul>
-      ${ingredients.map(ing => `<li>${ing}</li>`).join('')}
-    </ul>
-    <p>${mealData.strInstructions}</p>
-    <img src="${mealData.strMealThumb}" alt="">
-  `
-
-  mealInfoEl.appendChild(mealEl);
-
-  // show the popup
-  mealPopup.classList.remove('hidden')
-}
+  ]
+})
 ```
+
+### 4. Vuex (store)
+
+- 상태관리 라이브러리로 App 의 모든 component 에 대한 중앙 집중식 저장소 역활을 하여 상태 관리를 함
+
+- Vuex 는 어느 한 곳에 종속되지 않고 중앙에서 관리 되므로 모든 Component 가 읽기 / 쓰기 가 가능함
+
+```js
+// index.js in store
+
+import { createStore } from 'vuex'
+import book from './book.js'
+import about from './about.js'
+
+export default createStore({
+  modules: {
+    book,
+    about
+  }
+})
+```
+
+### 5. Nelify functions (Serverless) 
+
+- Structure
+
+<img src = "https://github.com/jacobkosmart/12.-June.21_SearchBookApp_VueJS/blob/c7813705cce16315f26e3f055db54e5c47a3cb88/src/assets/network%20serverless.jpg" width ="100%" /> 
+
+
+- 내부적으로 `AWS Lambda` 을 사용하여 serverless 를 사용
+
+```bash
+# in netlify.toml
+
+# Netlify Dev
+# https://cli.netlify.com/netlify-dev/#netlifytoml-dev-block
+
+# 제품모드
+[build]
+  command = "npm run build"
+  functions = "functions" # Netlify 서버리스 함수가 작선된 디렉토리를 지정합니다.
+  publish = "dist" # 프로젝트 빌드 결과의 디렉토리를 지정합니다.
+
+
+#  개발 모드
+[dev]
+  framework = "#custom" # 감지할 프로젝트 유형을 지정합니다. 앱 서버 및 `targetPort` 옵션을 실행하는 명령 옵션은
+  command = "npm run dev:webpack" # 연결할 프로젝트의 개발 서버를 실행하는 명령 (스크립트)을 지정합니다.
+  targetPort = 8079 # 연결할 프로젝트 개발 서버의 포트를 지정합니다.
+  port = 8080 # 출력할 netlify 서버의 포트를 지정합니다.
+  publish = "dist" # 프로젝트의 정정 콘텐츠 디렉토리를 지정합니다.
+  autoLauch = "false" # Netlify 서버가 준비되면 자동으로 브라우저를 오픈할 것인지 지정합니다.
+```
+
+
 
 
 ## 4. 느낀점
 
-- 비동기 관련 외부 API와 연결 관련해서 Json 이라던지, 비동기 관련 학습량 과 에러 코드가 부분이 많아서 어려움을 느낌
+- SPA framwork 중 하나인 vue.js 를 사용하여 페이지 로드 없이 바로 
 
 - 함수가 정리가 되지 않아 나중에 clean code 를 통해 js 파일 refactoring 필요성 있음
 
@@ -178,17 +195,15 @@ function showMealInfo(mealData) {
 
 ## Reference
 
-- [Florin Pop](https://www.youtube.com/watch?v=dtKciwk_si4&t=4697s)
+- [kakao developers](https://developers.kakao.com/)
 
-- [Design Daily](https://www.uidesigndaily.com/posts/sketch-recipe-app-food-mobile-day-615)
+- [Vue.js 3.0](https://v3.vuejs.org/)
 
-- [Gradient Background colors](https://www.eggradients.com/)
+- [Vuex](https://next.vuex.vuejs.org/)
 
-- [The Meal API](https://www.themealdb.com/api.php)
+- [Vue router](https://next.router.vuejs.org/)
 
-- [font-awesome](https://cdnjs.com/libraries/font-awesome)
-
-
+- [axios github](https://github.com/axios/axios)
 
 
 
